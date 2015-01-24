@@ -622,6 +622,19 @@ class Repository
     }
 
     /**
+     * Get the files that were modified between two commits.
+     *
+     * @param string $commitHashA
+     * @param string $commitHashB
+     * @return array
+     */
+    public function getModifiedFiles($commitHashA, $commitHashB)
+    {
+        $filesModified = $this->getClient()->run($this, "diff-tree --no-commit-id --name-only -r $commitHashA $commitHashB");
+        return explode("\n", trim($filesModified, "\r\n"));
+    }
+
+    /**
      * Get the current Repository path
      *
      * @return string Path where the repository is located
