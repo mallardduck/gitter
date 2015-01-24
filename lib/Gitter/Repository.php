@@ -69,6 +69,7 @@ class Repository
      * Get a git configuration variable
      *
      * @param string $key Configuration key
+     * @return string
      */
     public function getConfig($key)
     {
@@ -82,6 +83,7 @@ class Repository
      *
      * @param string $key   Configuration key
      * @param string $value Configuration value
+     * @return $this
      */
     public function setConfig($key, $value)
     {
@@ -129,6 +131,7 @@ class Repository
      * Add untracked files
      *
      * @param mixed $files Files to be added to the repository
+     * @return $this
      */
     public function add($files = '.')
     {
@@ -157,6 +160,7 @@ class Repository
      * Commit changes to the repository
      *
      * @param string $message Description of the changes made
+     * @return $this
      */
     public function commit($message)
     {
@@ -169,6 +173,7 @@ class Repository
      * Checkout a branch
      *
      * @param string $branch Branch to be checked out
+     * @return $this
      */
     public function checkout($branch)
     {
@@ -192,6 +197,7 @@ class Repository
      *
      * @param string $repository Repository to be pushed
      * @param string $refspec    Refspec for the push
+     * @return $this
      */
     public function push($repository = null, $refspec = null)
     {
@@ -271,6 +277,8 @@ class Repository
                 return substr($branch, 2);
             }
         }
+
+        return NULL;
     }
 
     /**
@@ -647,6 +655,7 @@ class Repository
      * Set the Client
      *
      * @param Client $path Client instance
+     * @return $this
      */
     public function setClient(Client $client)
     {
