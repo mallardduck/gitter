@@ -24,8 +24,8 @@
     },
     "minimum-stability": "stable",
     "autoload": {
-        "psr-0": {
-            "Gitter": "lib/"
+        "psr-4": {
+            "Gitter\\": "lib/Gitter"
         }
     }
 }
