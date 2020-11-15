@@ -113,6 +113,8 @@ class Client
      * Set the current Git binary path.
      *
      * @param string $path Path where the Git binary is located
+     *
+     * @return Client
      */
     protected function setPath($path)
     {

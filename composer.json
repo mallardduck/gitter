@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3",
+        "php": ">=5.4.0",
         "doctrine/instantiator": "1.0.*",
         "phpdocumentor/reflection-docblock": "2.0.*",
         "sebastian/comparator": "1.2.*",
@@ -22,14 +22,14 @@
         "symfony/process": "2.8.*"
     },
     "require-dev": {
-        "symfony/filesystem": "2.8.*",
-        "phpunit/phpunit": "~4.8",
+        "symfony/filesystem": "^2.8",
+        "phpunit/phpunit": "^4.8",
         "mockery/mockery": "0.9.1"
     },
     "minimum-stability": "stable",
     "autoload": {
-        "psr-0": {
-            "Gitter": "lib/"
+        "psr-4": {
+            "Gitter\\": "lib/Gitter"
         }
     }
 }

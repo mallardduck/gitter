@@ -3,7 +3,9 @@
 namespace Gitter\Tests;
 
 use Gitter\Client;
+use Gitter\Model\Blob;
 use Gitter\Model\Symlink;
+use Gitter\Model\Tree;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -181,13 +183,13 @@ class RepositoryTest extends TestCase
     {
         $repository = $this->client->getRepository(self::$tmpdir . '/testrepo');
         $branch = $repository->getCurrentBranch();
-        $this->assertTrue('master' === $branch);
+        $this->assertSame('master', $branch);
 
         $commits = $repository->getCommits();
         $hash = $commits[0]->getHash();
         $repository->checkout($hash);
         $newBranch = $repository->getCurrentBranch();
-        $this->assertTrue(null === $newBranch);
+        $this->assertNull($newBranch);
 
         $repository->checkout($branch);
     }
@@ -200,7 +202,7 @@ class RepositoryTest extends TestCase
         $hash = $commits[0]->getHash();
         $repository->checkout($hash);
         $branches = $repository->getBranches();
-        $this->assertTrue(3 === count($branches));
+        $this->assertCount(3, $branches);
 
         $branch = $repository->getHead('develop');
         $repository->checkout($current_branch);
@@ -217,10 +219,10 @@ class RepositoryTest extends TestCase
         $repository = $this->client->getRepository(self::$tmpdir . '/testrepo');
         $branch = $repository->checkout('issue12');
         $branch = $repository->getCurrentBranch();
-        $this->assertTrue('issue12' === $branch);
+        $this->assertSame('issue12', $branch);
         $repository->checkout('master');
         $branch = $repository->getCurrentBranch();
-        $this->assertTrue('master' === $branch);
+        $this->assertSame('master', $branch);
     }
 
     /**
@@ -234,13 +236,13 @@ class RepositoryTest extends TestCase
         foreach ($commits as $commit) {
             $this->assertTrue($commit->isCommit());
             $this->assertInstanceOf('Gitter\Model\Commit\Commit', $commit);
-            $this->assertEquals($commit->getMessage(), 'The truth unveiled');
+            $this->assertEquals('The truth unveiled', $commit->getMessage());
             $this->assertInstanceOf('Gitter\Model\Commit\Author', $commit->getAuthor());
-            $this->assertEquals($commit->getAuthor()->getName(), 'Luke Skywalker');
-            $this->assertEquals($commit->getAuthor()->getEmail(), 'luke@rebel.org');
-            $this->assertEquals($commit->getCommiter()->getName(), 'Luke Skywalker');
-            $this->assertEquals($commit->getCommiter()->getEmail(), 'luke@rebel.org');
-            $this->assertEquals($commit->getParentsHash(), array());
+            $this->assertEquals('Luke Skywalker', $commit->getAuthor()->getName());
+            $this->assertEquals('luke@rebel.org', $commit->getAuthor()->getEmail());
+            $this->assertEquals('Luke Skywalker', $commit->getCommiter()->getName());
+            $this->assertEquals('luke@rebel.org', $commit->getCommiter()->getEmail());
+            $this->assertEquals(array(), $commit->getParentsHash());
             $this->assertInstanceOf('DateTime', $commit->getDate());
             $this->assertInstanceOf('DateTime', $commit->getCommiterDate());
             $this->assertRegExp('/[a-f0-9]+/', $commit->getHash());
@@ -260,10 +262,10 @@ class RepositoryTest extends TestCase
         foreach ($commits as $commit) {
             $this->assertTrue($commit->isCommit());
             $this->assertInstanceOf('Gitter\Model\Commit\Commit', $commit);
-            $this->assertEquals($commit->getMessage(), 'The truth unveiled');
+            $this->assertEquals('The truth unveiled', $commit->getMessage());
             $this->assertInstanceOf('Gitter\Model\Commit\Author', $commit->getAuthor());
-            $this->assertEquals($commit->getAuthor()->getName(), 'Luke Skywalker');
-            $this->assertEquals($commit->getAuthor()->getEmail(), 'luke@rebel.org');
+            $this->assertEquals('Luke Skywalker', $commit->getAuthor()->getName());
+            $this->assertEquals('luke@rebel.org', $commit->getAuthor()->getEmail());
         }
     }
 
@@ -272,12 +274,13 @@ class RepositoryTest extends TestCase
         $repository = $this->client->getRepository(self::$tmpdir . '/testrepo');
         $files = $repository->getTree('master');
 
+        /** @var Blob|Tree|Symlink $file */
         foreach ($files as $file) {
             $this->assertTrue($file->isBlob());
             $this->assertInstanceOf('Gitter\Model\Blob', $file);
             $this->assertRegExp('/test_file[0-9]*.txt/', $file->getName());
-            $this->assertEquals($file->getSize(), '55');
-            $this->assertEquals($file->getMode(), '100644');
+            $this->assertEquals('55', $file->getSize());
+            $this->assertEquals('100644', $file->getMode());
             $this->assertRegExp('/[a-f0-9]+/', $file->getHash());
         }
     }
@@ -290,8 +293,8 @@ class RepositoryTest extends TestCase
         foreach ($files as $file) {
             $this->assertEquals('blob', $file['type']);
             $this->assertRegExp('/test_file[0-9]*.txt/', $file['name']);
-            $this->assertEquals($file['size'], '55');
-            $this->assertEquals($file['mode'], '100644');
+            $this->assertEquals('55', $file['size']);
+            $this->assertEquals('100644', $file['mode']);
             $this->assertRegExp('/[a-f0-9]+/', $file['hash']);
         }
     }
@@ -375,7 +378,7 @@ class RepositoryTest extends TestCase
     public function testIsGettingSymlinksWithinTrees()
     {
         if ('WIN' === strtoupper(substr(PHP_OS, 0, 3))) {
-            $this->markTestSkipped('Unable to run on Windows');
+            self::markTestSkipped('Unable to run on Windows');
         }
 
         $repository = $this->client->getRepository(self::$tmpdir . '/testrepo');
@@ -402,7 +405,7 @@ class RepositoryTest extends TestCase
     public function testIsGettingSymlinksWithinTreesOutput()
     {
         if ('WIN' === strtoupper(substr(PHP_OS, 0, 3))) {
-            $this->markTestSkipped('Unable to run on Windows');
+            self::markTestSkipped('Unable to run on Windows');
         }
 
         $repository = $this->client->getRepository(self::$tmpdir . '/testrepo');

@@ -16,6 +16,8 @@ use Gitter\Model\Commit\Commit;
 use Gitter\Model\Commit\Diff;
 use Gitter\Model\Tree;
 use Gitter\Statistics\StatisticsInterface;
+use ReflectionClass;
+use ReflectionException;
 
 class Repository
 {
@@ -23,7 +25,7 @@ class Repository
     protected $client;
     protected $commitsHaveBeenParsed = false;
 
-    protected $statistics = array();
+    protected $statistics = [];
 
     public function __construct($path, Client $client)
     {
@@ -32,7 +34,7 @@ class Repository
     }
 
     /**
-     * @param  bool $value
+     * @param bool $value
      */
     public function setCommitsHaveBeenParsed($value)
     {
@@ -68,6 +70,8 @@ class Repository
      * Get a git configuration variable.
      *
      * @param string $key Configuration key
+     *
+     * @return string
      */
     public function getConfig($key)
     {
@@ -81,6 +85,8 @@ class Repository
      *
      * @param string $key   Configuration key
      * @param string $value Configuration value
+     *
+     * @return Repository
      */
     public function setConfig($key, $value)
     {
@@ -93,15 +99,17 @@ class Repository
      * Add statistic aggregator.
      *
      * @param StatisticsInterface|array $statistics
+     *
+     * @throws ReflectionException
      */
     public function addStatistics($statistics)
     {
         if (!is_array($statistics)) {
-            $statistics = array($statistics);
+            $statistics = [$statistics];
         }
 
         foreach ($statistics as $statistic) {
-            $reflect = new \ReflectionClass($statistic);
+            $reflect = new ReflectionClass($statistic);
             $this->statistics[strtolower($reflect->getShortName())] = $statistic;
         }
     }
@@ -128,6 +136,8 @@ class Repository
      * Add untracked files.
      *
      * @param mixed $files Files to be added to the repository
+     *
+     * @return Repository
      */
     public function add($files = '.')
     {
@@ -156,6 +166,8 @@ class Repository
      * Commit changes to the repository.
      *
      * @param string $message Description of the changes made
+     *
+     * @return Repository
      */
     public function commit($message)
     {
@@ -168,6 +180,8 @@ class Repository
      * Checkout a branch.
      *
      * @param string $branch Branch to be checked out
+     *
+     * @return Repository
      */
     public function checkout($branch)
     {
@@ -191,6 +205,8 @@ class Repository
      *
      * @param string $repository Repository to be pushed
      * @param string $refspec    Refspec for the push
+     *
+     * @return Repository
      */
     public function push($repository = null, $refspec = null)
     {
@@ -232,7 +248,7 @@ class Repository
      */
     public function getBranches()
     {
-        static $cache = array();
+        static $cache = [];
 
         if (array_key_exists($this->path, $cache)) {
             return $cache[$this->path];
@@ -281,7 +297,7 @@ class Repository
     /**
      * Check if a specified branch exists.
      *
-     * @param  string  $branch Branch to be checked
+     * @param string $branch Branch to be checked
      *
      * @return bool True if the branch exists
      */
@@ -328,7 +344,7 @@ class Repository
      */
     public function getTags()
     {
-        static $cache = array();
+        static $cache = [];
 
         if (array_key_exists($this->path, $cache)) {
             return $cache[$this->path];
@@ -396,7 +412,7 @@ class Repository
     /**
      * Show the data from a specific commit.
      *
-     * @param  string $commitHash Hash of the specific commit to read data
+     * @param string $commitHash Hash of the specific commit to read data
      *
      * @return array  Commit data
      */
@@ -431,13 +447,13 @@ class Repository
     /**
      * Read diff logs and generate a collection of diffs.
      *
-     * @param array $logs  Array of log rows
+     * @param array $logs Array of log rows
      *
      * @return array       Array of diffs
      */
     public function readDiffLogs(array $logs)
     {
-        $diffs = array();
+        $diffs = [];
         $lineNumOld = 0;
         $lineNumNew = 0;
         foreach ($logs as $log) {
@@ -470,7 +486,7 @@ class Repository
 
             // Handle binary files properly.
             if ('Binary' === substr($log, 0, 6)) {
-                $m = array();
+                $m = [];
                 if (preg_match('/Binary files (.+) and (.+) differ/', $log, $m)) {
                     $diff->setOld($m[1]);
                     $diff->setNew("    {$m[2]}");
@@ -516,7 +532,7 @@ class Repository
      * Get the current HEAD.
      *
      * @param $default Optional branch to default to if in detached HEAD state.
-     * If not passed, just grabs the first branch listed.
+     *                 If not passed, just grabs the first branch listed.
      *
      * @return string the name of the HEAD branch, or a backup option if
      * in detached HEAD state
@@ -532,7 +548,7 @@ class Repository
 
         // Find first existing branch
         foreach (explode("\n", $file) as $line) {
-            $m = array();
+            $m = [];
             if (preg_match('#ref:\srefs/heads/(.+)#', $line, $m)) {
                 if ($this->hasBranch($m[1])) {
                     return $m[1];
@@ -558,7 +574,7 @@ class Repository
     /**
      * Extract the tree hash for a given branch or tree reference.
      *
-     * @param  string $branch
+     * @param string $branch
      *
      * @return string
      */
@@ -573,7 +589,7 @@ class Repository
     /**
      * Get the Tree for the provided folder.
      *
-     * @param  string $tree Folder that will be parsed
+     * @param string $tree Folder that will be parsed
      *
      * @return Tree   Instance of Tree for the provided folder
      */
@@ -588,7 +604,7 @@ class Repository
     /**
      * Get the Blob for the provided file.
      *
-     * @param  string $blob File that will be parsed
+     * @param string $blob File that will be parsed
      *
      * @return Blob   Instance of Blob for the provided file
      */
@@ -600,13 +616,13 @@ class Repository
     /**
      * Blames the provided file and parses the output.
      *
-     * @param  string $file File that will be blamed
+     * @param string $file File that will be blamed
      *
      * @return array  Commits hashes containing the lines
      */
     public function getBlame($file)
     {
-        $blame = array();
+        $blame = [];
         $logs = $this->getClient()->run($this, "blame -s $file");
         $logs = explode("\n", $logs);
 
@@ -622,7 +638,7 @@ class Repository
             $currentCommit = $match[1][0];
             if ($currentCommit != $previousCommit) {
                 $i++;
-                $blame[$i] = array('line' => '', 'commit' => $currentCommit);
+                $blame[$i] = ['line' => '', 'commit' => $currentCommit];
             }
 
             $blame[$i]['line'] .= PHP_EOL . $match[3][0];
@@ -677,7 +693,7 @@ class Repository
     /**
      * Get and parse the output of a git command with a XML-based pretty format.
      *
-     * @param  string $command Command to be run by git
+     * @param string $command Command to be run by git
      *
      * @return array  Parsed command output
      */
