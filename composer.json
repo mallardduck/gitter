@@ -14,16 +14,16 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
+        "php": "^7.0",
         "doctrine/instantiator": "1.0.*",
         "phpdocumentor/reflection-docblock": "2.0.*",
-        "sebastian/comparator": "1.2.*",
-        "sebastian/recursion-context": "1.0.*",
+        "sebastian/comparator": "^3.0",
+        "sebastian/recursion-context": "^3.0",
         "symfony/process": "2.8.*"
     },
     "require-dev": {
         "symfony/filesystem": "^2.8",
-        "phpunit/phpunit": "^4.8",
+        "phpunit/phpunit": "^7.0",
         "mockery/mockery": "0.9.1"
     },
     "minimum-stability": "stable",
