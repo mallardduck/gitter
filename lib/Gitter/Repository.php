@@ -414,7 +414,7 @@ class Repository
      *
      * @param string $commitHash Hash of the specific commit to read data
      *
-     * @return array  Commit data
+     * @return Commit Commit data
      */
     public function getCommit($commitHash)
     {
@@ -681,7 +681,9 @@ class Repository
     /**
      * Set the Client.
      *
-     * @param Client $path Client instance
+     * @param Client $client
+     *
+     * @return Repository
      */
     public function setClient(Client $client)
     {

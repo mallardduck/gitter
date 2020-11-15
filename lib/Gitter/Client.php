@@ -62,6 +62,12 @@ class Client
         return new Repository($path, $this);
     }
 
+    /**
+     * @param $repository
+     * @param $command
+     *
+     * @return string
+     */
     public function run($repository, $command)
     {
         if (version_compare($this->getVersion(), '1.7.2', '>=')) {
@@ -79,6 +85,9 @@ class Client
         return $process->getOutput();
     }
 
+    /**
+     * @return string
+     */
     public function getVersion()
     {
         static $version;

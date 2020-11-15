@@ -47,11 +47,9 @@ class ClientTest extends TestCase
         $this->client = new Client($path);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testIsNotAbleToGetUnexistingRepository()
     {
+        $this->expectException(\RuntimeException::class);
         $this->client->getRepository(self::$tmpdir . '/testrepo');
     }
 
@@ -75,27 +73,21 @@ class ClientTest extends TestCase
         $this->assertInstanceOf('Gitter\Repository', $repository);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testIsNotAbleToCreateRepositoryDueToExistingOne()
     {
+        $this->expectException(\RuntimeException::class);
         $this->client->createRepository(self::$tmpdir . '/testrepo');
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testIsNotOpeningHiddenRepositories()
     {
+        $this->expectException(\RuntimeException::class);
         $this->client->getRepository(self::$tmpdir . '/hiddenrepo');
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testIsCatchingGitCommandErrors()
     {
+        $this->expectException(\RuntimeException::class);
         $repository = $this->client->getRepository(self::$tmpdir . '/testrepo');
         $repository->getClient()->run($repository, 'wrong');
     }
