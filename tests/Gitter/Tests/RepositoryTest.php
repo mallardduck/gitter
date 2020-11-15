@@ -202,7 +202,7 @@ class RepositoryTest extends TestCase
         $hash = $commits[0]->getHash();
         $repository->checkout($hash);
         $branches = $repository->getBranches();
-        $this->assertCount(3, $branches);
+        $this->assertCount(3, $branches, print_r($branches, true));
 
         $branch = $repository->getHead('develop');
         $repository->checkout($current_branch);

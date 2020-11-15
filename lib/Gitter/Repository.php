@@ -265,7 +265,10 @@ class Repository
         // Since we've stripped whitespace, the result "* (detached from "
         // and "* (no branch)" that is displayed in detached HEAD state
         // becomes "(detachedfrom" and "(nobranch)" respectively.
-        if ((0 === strpos($branches[0], '(detachedfrom')) || ('(nobranch)' === $branches[0])) {
+        if (($branches[0] === '(nobranch)')
+            || (strpos($branches[0], '(detachedfrom') === 0)
+            || (strpos($branches[0], '(HEADdetachedat') === 0)
+        ) {
             $branches = array_slice($branches, 1);
         }
 
@@ -284,8 +287,11 @@ class Repository
         $branches = explode("\n", $branches);
 
         foreach ($branches as $branch) {
-            if ('*' === $branch[0]) {
-                if (preg_match('/(detached|no branch)/', $branch)) {
+            if ($branch[0] === '*') {
+                if (($branch === '* (no branch)')
+                    || (strpos($branch, '* (detached from ') === 0)
+                    || (strpos($branch, '* (HEAD detached at ') === 0)
+                ) {
                     return null;
                 }
 
@@ -646,6 +652,21 @@ class Repository
         }
 
         return $blame;
+    }
+
+    /**
+     * Get the files that were modified between two commits.
+     *
+     * @param string $commitHashA
+     * @param string $commitHashB
+     *
+     * @return array
+     */
+    public function getModifiedFiles($commitHashA, $commitHashB)
+    {
+        $client = $this->getClient();
+        $filesModified = $client->run($this, "diff-tree --no-commit-id --name-only -r $commitHashA $commitHashB");
+        return explode("\n", trim($filesModified, "\r\n"));
     }
 
     /**
