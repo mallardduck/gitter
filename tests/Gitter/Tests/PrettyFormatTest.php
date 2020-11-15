@@ -3,8 +3,9 @@
 namespace Gitter\Tests;
 
 use Gitter\PrettyFormat;
+use PHPUnit\Framework\TestCase;
 
-class PrettyFormatTest extends \PHPUnit_Framework_TestCase
+class PrettyFormatTest extends TestCase
 {
     /**
      * @dataProvider dataForTestIsParsingPrettyXMLFormat
@@ -34,16 +35,20 @@ class PrettyFormatTest extends \PHPUnit_Framework_TestCase
             array(
                 '<item><tag><inner_tag>value</inner_tag></tag></item>',
                 array(array('tag' => array(array('inner_tag' => 'value')))),
-            )
+            ),
+            array(
+                "<item><tag>value\x1B</tag><tag2>value2</tag2></item>",
+                array(array('tag' => 'value?', 'tag2' => 'value2')),
+            ),
         );
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testIsNotParsingWithoutData()
     {
-        $format = new PrettyFormat;
+        $format = new PrettyFormat();
         $format->parse('');
     }
 }

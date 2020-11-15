@@ -11,9 +11,8 @@
 
 namespace Gitter;
 
-use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ExecutableFinder;
-use Symfony\Component\Process\ProcessUtils;
+use Symfony\Component\Process\Process;
 
 class Client
 {
@@ -30,9 +29,10 @@ class Client
     }
 
     /**
-     * Creates a new repository on the specified path
+     * Creates a new repository on the specified path.
      *
      * @param  string     $path Path where the new repository will be created
+     *
      * @return Repository Instance of Repository
      */
     public function createRepository($path, $bare = null)
@@ -47,9 +47,10 @@ class Client
     }
 
     /**
-     * Opens a repository at the specified path
+     * Opens a repository at the specified path.
      *
      * @param  string     $path Path where the repository is located
+     *
      * @return Repository Instance of Repository
      */
     public function getRepository($path)
@@ -67,7 +68,7 @@ class Client
             $command = '-c "color.ui"=false ' . $command;
         }
 
-        $process = new Process(ProcessUtils::escapeArgument($this->getPath()) . ' ' . $command, $repository->getPath());
+        $process = new Process($this->getPath() . ' ' . $command, $repository->getPath());
         $process->setTimeout(180);
         $process->run();
 
@@ -80,32 +81,38 @@ class Client
 
     public function getVersion()
     {
-        $process = new Process(ProcessUtils::escapeArgument($this->getPath()) . ' --version');
+        static $version;
+
+        if (null !== $version) {
+            return $version;
+        }
+
+        $process = new Process($this->getPath() . ' --version');
         $process->run();
 
         if (!$process->isSuccessful()) {
             throw new \RuntimeException($process->getErrorOutput());
         }
 
-        $version = substr($process->getOutput(), 12);
-        return trim($version);
+        $version = trim(substr($process->getOutput(), 12));
+
+        return $version;
     }
 
     /**
-     * Get the current Git binary path
+     * Get the current Git binary path.
      *
      * @return string Path where the Git binary is located
      */
     protected function getPath()
     {
-        return $this->path;
+        return escapeshellarg($this->path);
     }
 
     /**
-     * Set the current Git binary path
+     * Set the current Git binary path.
      *
      * @param string $path Path where the Git binary is located
-     * @return $this
      */
     protected function setPath($path)
     {

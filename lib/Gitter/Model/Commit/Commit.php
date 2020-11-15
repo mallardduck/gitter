@@ -11,10 +11,10 @@
 
 namespace Gitter\Model\Commit;
 
-use Gitter\Model\Object;
+use Gitter\Model\GitObject;
 use Gitter\Util\DateTime;
 
-class Commit extends Object
+class Commit extends GitObject
 {
     protected $shortHash;
     protected $treeHash;
@@ -65,6 +65,7 @@ class Commit extends Object
     public function setShortHash($shortHash)
     {
         $this->shortHash = $shortHash;
+
         return $this;
     }
 
@@ -76,6 +77,7 @@ class Commit extends Object
     public function setTreeHash($treeHash)
     {
         $this->treeHash = $treeHash;
+
         return $this;
     }
 
@@ -87,6 +89,7 @@ class Commit extends Object
     public function setParentsHash($parentsHash)
     {
         $this->parentsHash = $parentsHash;
+
         return $this;
     }
 
@@ -98,6 +101,7 @@ class Commit extends Object
     public function setAuthor($author)
     {
         $this->author = $author;
+
         return $this;
     }
 
@@ -109,6 +113,7 @@ class Commit extends Object
     public function setDate($date)
     {
         $this->date = $date;
+
         return $this;
     }
 
@@ -120,6 +125,7 @@ class Commit extends Object
     public function setCommiter($commiter)
     {
         $this->commiter = $commiter;
+
         return $this;
     }
 
@@ -131,6 +137,7 @@ class Commit extends Object
     public function setCommiterDate($commiterDate)
     {
         $this->commiterDate = $commiterDate;
+
         return $this;
     }
 
@@ -142,6 +149,7 @@ class Commit extends Object
     public function setMessage($message)
     {
         $this->message = $message;
+
         return $this;
     }
 
@@ -149,10 +157,11 @@ class Commit extends Object
     {
         return $this->body;
     }
-    
+
     public function setBody($body)
     {
         $this->body = $body;
+
         return $this;
     }
 
@@ -164,6 +173,7 @@ class Commit extends Object
     public function setDiffs($diffs)
     {
         $this->diffs = $diffs;
+
         return $this;
     }
 

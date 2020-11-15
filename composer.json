@@ -14,18 +14,22 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "symfony/process": ">=2.2"
+        "php": ">=5.3",
+        "doctrine/instantiator": "1.0.*",
+        "phpdocumentor/reflection-docblock": "2.0.*",
+        "sebastian/comparator": "1.2.*",
+        "sebastian/recursion-context": "1.0.*",
+        "symfony/process": "2.8.*"
     },
     "require-dev": {
-        "symfony/filesystem": ">=2.2",
-        "phpunit/phpunit": "~4.0",
-        "mockery/mockery": "~0.9"
+        "symfony/filesystem": "2.8.*",
+        "phpunit/phpunit": "~4.8",
+        "mockery/mockery": "0.9.1"
     },
     "minimum-stability": "stable",
     "autoload": {
-        "psr-4": {
-            "Gitter\\": "lib/Gitter"
+        "psr-0": {
+            "Gitter": "lib/"
         }
     }
 }

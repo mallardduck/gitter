@@ -3,10 +3,10 @@
 namespace Gitter\Tests;
 
 use Gitter\Client;
-use Gitter\Repository;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-class ClientTest extends \PHPUnit_Framework_TestCase
+class ClientTest extends TestCase
 {
     public static $tmpdir;
     protected $client;
@@ -18,7 +18,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         } elseif (getenv('TMPDIR')) {
             self::$tmpdir = getenv('TMPDIR');
         } else {
-           self::$tmpdir = '/tmp';
+            self::$tmpdir = '/tmp';
         }
 
         self::$tmpdir .= '/gitlist_' . md5(time() . mt_rand());
@@ -29,6 +29,12 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         if (!is_writable(self::$tmpdir)) {
             $this->markTestSkipped('There are no write permissions in order to create test repositories.');
         }
+    }
+
+    public static function tearDownAfterClass()
+    {
+        $fs = new Filesystem();
+        $fs->remove(self::$tmpdir);
     }
 
     public function setUp()
@@ -42,7 +48,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testIsNotAbleToGetUnexistingRepository()
     {
@@ -60,7 +66,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $repository = $this->client->createRepository(self::$tmpdir . '/testrepo');
         $fs = new Filesystem();
         $fs->remove(self::$tmpdir . '/testrepo/.git/description');
-        $this->assertRegExp("/nothing to commit/", $repository->getClient()->run($repository, 'status'));
+        $this->assertRegExp('/nothing to commit/', $repository->getClient()->run($repository, 'status'));
     }
 
     public function testIsCreatingBareRepository()
@@ -70,7 +76,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testIsNotAbleToCreateRepositoryDueToExistingOne()
     {
@@ -78,7 +84,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testIsNotOpeningHiddenRepositories()
     {
@@ -86,17 +92,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testIsCatchingGitCommandErrors()
     {
         $repository = $this->client->getRepository(self::$tmpdir . '/testrepo');
         $repository->getClient()->run($repository, 'wrong');
-    }
-
-    public static function tearDownAfterClass()
-    {
-        $fs = new Filesystem();
-        $fs->remove(self::$tmpdir);
     }
 }

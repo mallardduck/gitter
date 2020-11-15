@@ -13,7 +13,7 @@ namespace Gitter\Model;
 
 use Gitter\Repository;
 
-class Tree extends Object implements \RecursiveIterator
+class Tree extends GitObject implements \RecursiveIterator
 {
     protected $mode;
     protected $name;
@@ -28,8 +28,8 @@ class Tree extends Object implements \RecursiveIterator
 
     public function parse()
     {
-        $data = $this->getRepository()->getClient()->run($this->getRepository(), 'ls-tree -l ' . $this->getHash());
-        $lines = explode("\n", $data);
+        $data = $this->getRepository()->getClient()->run($this->getRepository(), 'ls-tree -lz ' . $this->getHash());
+        $lines = explode("\0", $data);
         $files = array();
         $root = array();
 
@@ -39,18 +39,21 @@ class Tree extends Object implements \RecursiveIterator
                 continue;
             }
 
-            $files[] = preg_split("/[\s]+/", $line, 5);
+            $tabSplit = preg_split("/[\t]+/", $line, 2);
+            $file = preg_split("/[\s]+/", $tabSplit[0], 4);
+            $file[] = $tabSplit[1];
+            $files[] = $file;
         }
 
         foreach ($files as $file) {
-            if ($file[1] == 'commit') {
+            if ('commit' == $file[1]) {
                 // submodule
                 continue;
             }
 
-            if ($file[0] == '120000') {
+            if ('120000' == $file[0]) {
                 $show = $this->getRepository()->getClient()->run($this->getRepository(), 'show ' . $file[2]);
-                $tree = new Symlink;
+                $tree = new Symlink();
                 $tree->setMode($file[0]);
                 $tree->setName($file[4]);
                 $tree->setPath($show);
@@ -58,7 +61,7 @@ class Tree extends Object implements \RecursiveIterator
                 continue;
             }
 
-            if ($file[1] == 'blob') {
+            if ('blob' == $file[1]) {
                 $blob = new Blob($file[2], $this->getRepository());
                 $blob->setMode($file[0]);
                 $blob->setName($file[4]);
