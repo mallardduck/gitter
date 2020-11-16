@@ -43,11 +43,9 @@ class PrettyFormatTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testIsNotParsingWithoutData()
     {
+        $this->expectException(\RuntimeException::class);
         $format = new PrettyFormat();
         $format->parse('');
     }

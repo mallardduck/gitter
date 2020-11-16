@@ -14,8 +14,8 @@
         }
     ],
     "require": {
-        "php": "^7.1",
-        "doctrine/instantiator": "1.0.*",
+        "php": "^7.2",
+        "doctrine/instantiator": "^1.0",
         "phpdocumentor/reflection-docblock": "2.0.*",
         "sebastian/comparator": "^3.0",
         "sebastian/recursion-context": "^3.0",
@@ -23,7 +23,7 @@
     },
     "require-dev": {
         "symfony/filesystem": "^2.7|^3.0|^4.0",
-        "phpunit/phpunit": "^7.0|^8.0|^9.0",
+        "phpunit/phpunit": "^8.0|^9.0",
         "mockery/mockery": "0.9.1",
         "theseer/tokenizer": "1.1.*"
     },
