@@ -70,11 +70,13 @@ class Client
      */
     public function run($repository, $command)
     {
+        $commandArray[] = $this->getPath();
         if (version_compare($this->getVersion(), '1.7.2', '>=')) {
-            $command = '-c "color.ui"=false ' . $command;
+            $commandArray[] = '-c "color.ui"=false';
         }
+        $commandArray[] = $command;
 
-        $process = new Process([$this->getPath(), $command], $repository->getPath());
+        $process = new Process($commandArray, $repository->getPath());
         $process->setTimeout(180);
         $process->run();
 
@@ -115,7 +117,7 @@ class Client
      */
     protected function getPath()
     {
-        return escapeshellarg($this->path);
+        return $this->path;
     }
 
     /**
