@@ -27,6 +27,9 @@
     "autoload": {
         "psr-4": {
             "Gitter\\": "lib/Gitter"
-        }
+        },
+        "files": [
+            "lib/helpers.php"
+        ]
     }
 }

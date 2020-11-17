@@ -74,7 +74,7 @@ class Client
             $command = '-c "color.ui"=false ' . $command;
         }
 
-        $process = new Process([$this->getPath(), $command], $repository->getPath());
+        $process = new Process(GitterUtils::escapeArgument($this->getPath()) . ' ' . $command, $repository->getPath());
         $process->setTimeout(180);
         $process->run();
 
@@ -96,7 +96,7 @@ class Client
             return $version;
         }
 
-        $process = new Process([$this->getPath(), '--version']);
+        $process = new Process(GitterUtils::escapeArgument($this->getPath()) . ' --version');
         $process->run();
 
         if (!$process->isSuccessful()) {
