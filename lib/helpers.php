@@ -40,4 +40,9 @@ class GitterUtils {
 
         return "'".str_replace("'", "'\\''", $argument)."'";
     }
+
+    private static function isSurroundedBy($arg, $char)
+    {
+        return 2 < strlen($arg) && $char === $arg[0] && $char === $arg[strlen($arg) - 1];
+    }
 }
